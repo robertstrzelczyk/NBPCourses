@@ -1,16 +1,13 @@
 ﻿using NBPCourses.Core.Integrations.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using System.IO;
 using NBPCourses.Core.Integrations.Models;
 using NBPCourses.Core.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Globalization;
 
 namespace NBPCourses.Core.Integrations
 {
@@ -43,8 +40,9 @@ namespace NBPCourses.Core.Integrations
                     {
                         CurrencyName = rate.Currency,
                         Code = rate.Code,
-                        Mid = rate.Mid
-                    }).OrderBy(x => x.CurrencyName).ToList();
+                        Mid = rate.Mid,
+                        EffectiveDate = table.EffectiveDate
+                    }).OrderBy(x => x.EffectiveDate).ToList();
                 }
 
                 return output;

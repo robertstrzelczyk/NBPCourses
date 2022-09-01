@@ -28,26 +28,43 @@ namespace NBPCourses.Api.Controllers
         }
 
         /// <summary>
-        /// Pobranie kursów ze strony NBP
+        /// Pobranie kursów z bazy danych (jest to opcjonalny endpoint, gdybyśmy chcieli pobrać dane z bazy danych bezpośrednio)
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<JsonResult> GetCurrencyList()
+        public async Task<JsonResult> GetCourses()
         {
-            var currencyList = await
-                _integrationNBPService.GetCoursesAsync();
+            var currencyList = await _coursesService.GetCoursesAsync();
 
             return Json(new { iTotalRecords = currencyList.TotalCount, iTotalDisplayRecords = currencyList.TotalCount, aaData = currencyList.Items });
         }
 
         /// <summary>
-        /// Dodawanie kursów do bazy danych
+        /// Pobranie kursów ze strony NBP
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<JsonResult> GetCurrencyList()
+        {
+            var currencyList = await
+                _integrationNBPService.GetCoursesAsync();
+
+            await Task.Run(() =>
+            {
+                _coursesService.AddCoursesAsync();
+            });
+
+            return Json(new { iTotalRecords = currencyList.TotalCount, iTotalDisplayRecords = currencyList.TotalCount, aaData = currencyList.Items });
+        }
+
+        /// <summary>
+        /// Dodawanie kursów do bazy danych (opcjonalna opcja, aby samemu można strzelić do api i pobrać dane)
         /// </summary>
         /// <returns></returns>
         [HttpPost("/add-courses")]
         public async Task<IActionResult> AddAsync()
         {
-            await _coursesService.AddCourses();
+            await _coursesService.AddCoursesAsync();
 
             return Ok();
         }
